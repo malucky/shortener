@@ -36,6 +36,7 @@ namespace :db do
 
    desc 'Reset the database'
    task :reset, :env do |t, args|
+        puts args
         ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database =>  "db/#{args[:env]}.sqlite3.db"
         ActiveRecord::Migration.verbose = true
         ActiveRecord::Migrator.down('db/migrate')

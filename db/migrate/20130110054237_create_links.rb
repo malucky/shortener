@@ -17,5 +17,6 @@ class CreateLinks < ActiveRecord::Migration
 
   def self.down
     drop_table :links
+    puts "dropping"
   end
 end

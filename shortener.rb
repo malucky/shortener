@@ -30,12 +30,17 @@ end
 # http://guides.rubyonrails.org/association_basics.html
 
 class Link < ActiveRecord::Base
+
   def shorten
-    # self.code = '123'
-    self.update_attribute(:code, SecureRandom.uuid)
+    self.code = (SecureRandom.uuid).slice(0, 4)
     self.code
   end
 
+  def addVisit
+    self.visits = self.visits + 1
+    self.save
+    puts "inside Addvisit" + self.visits.to_s
+  end
 end
 
 ###########################################################
@@ -54,17 +59,23 @@ get '/new' do
 end
 
 get '/:path' do
-  url = Link.find(:first, :conditions => { :code => params[:path] })
-  puts url.url
-  redirect url.url
-  #redirect to /code
-
+  link = Link.find(:first, :conditions => { :code => params[:path] })
+  if link != nil
+    link.addVisit
+    puts "get :path" + link.inspect #read_attribute(:visits).to_s
+    redirect link.url
+  else
+    erb :error
+  end
 end
 
 post '/new' do
   url = params[:url]
-  link = Link.create! :url => url
-  link.shorten
+  link = Link.find_or_create_by_url(url) do |l|
+    l.shorten
+  end
+
+  link.code
 end
 
 # MORE ROUTES GO HERE
