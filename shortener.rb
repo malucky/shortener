@@ -1,6 +1,8 @@
 require 'sinatra'
 require 'active_record'
 require 'pry'
+require 'securerandom'
+require 'uri'
 
 ###########################################################
 # Configuration
@@ -28,6 +30,11 @@ end
 # http://guides.rubyonrails.org/association_basics.html
 
 class Link < ActiveRecord::Base
+  def shorten
+    # self.code = '123'
+    self.update_attribute(:code, SecureRandom.uuid)
+    self.code
+  end
 
 end
 
@@ -36,7 +43,8 @@ end
 ###########################################################
 
 get '/' do
-  puts Link.find(:all).to_s
+  # puts request.url
+  # puts Link.find(:all).to_s
   @links = Link.find :all # FIXME
   erb :index
 end
@@ -45,9 +53,18 @@ get '/new' do
     erb :form
 end
 
+get '/:path' do
+  url = Link.find(:first, :conditions => { :code => params[:path] })
+  puts url.url
+  redirect url.url
+  #redirect to /code
+
+end
+
 post '/new' do
-    link = Link.create! :url => '1', :code => "short"
-    link.url
+  url = params[:url]
+  link = Link.create! :url => url
+  link.shorten
 end
 
 # MORE ROUTES GO HERE
