@@ -28,6 +28,7 @@ end
 # http://guides.rubyonrails.org/association_basics.html
 
 class Link < ActiveRecord::Base
+
 end
 
 ###########################################################
@@ -35,8 +36,9 @@ end
 ###########################################################
 
 get '/' do
-    @links = [] # FIXME
-    erb :index
+  puts Link.find(:all).to_s
+  @links = Link.find :all # FIXME
+  erb :index
 end
 
 get '/new' do
@@ -44,7 +46,8 @@ get '/new' do
 end
 
 post '/new' do
-    # PUT CODE HERE TO CREATE NEW SHORTENED LINKS
+    link = Link.create! :url => '1', :code => "short"
+    link.url
 end
 
 # MORE ROUTES GO HERE
