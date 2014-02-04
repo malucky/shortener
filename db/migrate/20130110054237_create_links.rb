@@ -7,7 +7,7 @@
 # be created with a later timestamp.
 
 class CreateLinks < ActiveRecord::Migration
-  def self.change
+  def self.up
     create_table :links do |t|
       t.string :url
       t.string :code
@@ -15,10 +15,7 @@ class CreateLinks < ActiveRecord::Migration
     end
   end
 
-  def self.up
-  end
-
   def self.down
+    drop_table :links
   end
-
 end
